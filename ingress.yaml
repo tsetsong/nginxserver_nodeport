@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+  namespace: ingress-nginx
+  annotations:
+    # Use the NGINX ingress controller
+    kubernetes.io/ingress.class: "nginx"
+    # Enable SSL passthrough
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+spec:
+  tls:
+  # This secret must exist in the same namespace as the ingress
+  - hosts: 
+    - k8s-control
+    secretName: k8s-cntrl-tls
+  rules:
+  - host: k8s-control
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 80
+
